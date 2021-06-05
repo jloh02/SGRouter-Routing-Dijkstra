@@ -1,0 +1,12 @@
+spring:
+    config:
+        activate:
+            on-profile: prod
+logging:
+  level:
+    ROOT: INFO
+    com.jonathan: DEBUG
+    org.springframework: INFO
+    com.google.cloud: INFO
+
+appengine-deployment: false
