@@ -16,9 +16,9 @@ public class RoutingController {
 	@GetMapping("/route")
 	public String route(){
 		SQLiteHandler sqh = new SQLiteHandler(); //!IMPORANT ensure this line is before download
-		//CloudStorageHandler.downloadDB();  //TODO uncomment this line
-		System.out.println(sqh.getNodes());
-		System.out.println(sqh.getVertices("CC9","CC10"));
+		CloudStorageHandler.downloadDB();
+		// System.out.println(sqh.getNodes());
+		// System.out.println(sqh.getVertices("CC9","CC10"));
 
 		sqh.close();
 		return "";

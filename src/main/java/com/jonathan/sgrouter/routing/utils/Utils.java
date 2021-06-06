@@ -1,9 +1,5 @@
 package com.jonathan.sgrouter.routing.utils;
 
-import java.time.ZonedDateTime;
-
-import com.jonathan.sgrouter.routing.RoutingApplication;
-
 public class Utils {
 	public static boolean isBusService(String s) {
 		return s.matches("^(\\d{1,3}[ABCEGMNRWXe]?)|(NR\\d)|(CT8)|(CT18)");
