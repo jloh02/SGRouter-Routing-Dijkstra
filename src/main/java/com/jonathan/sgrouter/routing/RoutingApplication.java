@@ -30,7 +30,8 @@ public class RoutingApplication {
 		CloudStorageHandler.downloadDB();
 		
 		Dijkstra d = new Dijkstra();
-		d.route(sqh,"CC14","19089");
+		//d.route(sqh,"CC14","19089");
+		d.route(sqh,"CC21","75361");
 
 		sqh.close();
 	}
