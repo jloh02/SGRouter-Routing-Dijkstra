@@ -11,6 +11,7 @@ import lombok.Data;
 public class RouteState implements Comparable<RouteState> {
 	String src, prevService;
 	double time;
+	Set<String> traversedNodes;
 	Set<String> walked;
 	List<SubRoute> path;
 
@@ -21,16 +22,22 @@ public class RouteState implements Comparable<RouteState> {
 		this.time = time;
 		this.walked = new HashSet<>();
 		this.path=new ArrayList<>();
+		this.traversedNodes=new HashSet<>();
 	}
 
 	//Used for appending to pq
-	public RouteState(String src, String prevService, double time, Set<String> walked, List<SubRoute> path, SubRoute sub) {
+	public RouteState(RouteState old, String src, String prevService, double vtxTime) {
 		this.src = src;
 		this.prevService = prevService;
-		this.time = time;
-		this.walked = new HashSet<>(walked);
-		this.path=new ArrayList<>(path);
-		this.path.add(sub);
+		this.time = old.getTime();
+		this.walked = new HashSet<>(old.getWalked());
+		this.path=new ArrayList<>(old.getPath());
+		this.traversedNodes = new HashSet<>(old.getTraversedNodes());
+
+		this.time += vtxTime;
+		this.path.add(new SubRoute(vtxTime, prevService, src));
+		this.traversedNodes.add(src);
+		if(this.prevService.contains("Walk")) this.walked.add(prevService);
 	}
 
 	@Override

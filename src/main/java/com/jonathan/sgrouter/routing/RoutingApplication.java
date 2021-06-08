@@ -1,12 +1,11 @@
 package com.jonathan.sgrouter.routing;
 
+import java.lang.System.Logger;
 import java.util.Random;
 
 import com.jonathan.sgrouter.routing.config.Config;
 import com.jonathan.sgrouter.routing.controllers.RoutingController;
-import com.jonathan.sgrouter.routing.pathfinder.Dijkstra;
-import com.jonathan.sgrouter.routing.utils.CloudStorageHandler;
-import com.jonathan.sgrouter.routing.utils.SQLiteHandler;
+import com.jonathan.sgrouter.routing.pathfinder.PathfinderExecutor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -30,11 +29,10 @@ public class RoutingApplication {
 	public void doSomethingAfterStartup() {
 		config = new Config(cfgImport);
 
-		for(int i=0;i<1;i++)  RoutingController.routeAbs(randLat(), randLon(), randLat(), randLon());
-		
-		//Dijkstra d = new Dijkstra();
-		//d.route(sqh,"CC14","19089");
-		//d.route(sqh,"CC21","75361");
+		//? Testing Code
+		// for(int i=0;i<5;i++)  {
+		// 	PathfinderExecutor.route(randLat(), randLon(), randLat(), randLon());
+		// }
 	}
 
 	double randLat(){
