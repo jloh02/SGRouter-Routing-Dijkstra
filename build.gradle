@@ -28,12 +28,17 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
 	implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.34.0'
 
+	// https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+	implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.3'
+
 	// https://mvnrepository.com/artifact/org.geotools/gt-main
 	implementation group: 'org.geotools', name: 'gt-main', version: '25-RC'
 
 	implementation platform('com.google.cloud:libraries-bom:20.5.0')
 	compile 'com.google.cloud:google-cloud-datastore'
 	compile 'com.google.cloud:google-cloud-storage'
+
+	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
 }
 
 test {
