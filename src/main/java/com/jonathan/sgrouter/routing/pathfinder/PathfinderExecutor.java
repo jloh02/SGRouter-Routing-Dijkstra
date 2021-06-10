@@ -12,7 +12,6 @@ import com.jonathan.sgrouter.routing.utils.SQLiteHandler;
 import com.jonathan.sgrouter.routing.utils.Utils;
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +23,7 @@ import org.opengis.referencing.FactoryException;
 @Slf4j
 public class PathfinderExecutor {
   public static final int kShortest = 3;
-  public static Map<String, ArrayList<SubRoute>> dp;
+  public static HashMap<String, ArrayList<SubRoute>> dp;
   public static SQLiteHandler sqh;
   public static RouteList routes;
 

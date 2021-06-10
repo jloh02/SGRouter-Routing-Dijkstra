@@ -7,13 +7,12 @@ import com.jonathan.sgrouter.routing.models.Vertex;
 import com.jonathan.sgrouter.routing.models.VisitedState;
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.PriorityQueue;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Pathfinder implements Runnable {
-  Map<String, VisitedState> vis = new HashMap<>();
+  HashMap<String, VisitedState> vis = new HashMap<>();
 
   String src, des;
   double firstWalk, lastWalk;
@@ -29,7 +28,7 @@ public class Pathfinder implements Runnable {
 
   public void run() {
     int routesFound = 0;
-    Map<String, String> nodeNames = new HashMap<>();
+    HashMap<String, String> nodeNames = new HashMap<>();
     for (Node n : this.nodes) {
       vis.put(n.getSrcKey(), new VisitedState());
       nodeNames.put(n.getSrcKey(), n.getName());

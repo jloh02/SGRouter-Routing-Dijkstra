@@ -8,8 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -81,7 +81,7 @@ public class SQLiteHandler {
     return new ArrayList<>();
   }
 
-  public ArrayList<Vertex> getVertices(String src, Set<String> walkState) {
+  public ArrayList<Vertex> getVertices(String src, HashSet<String> walkState) {
     StringBuilder sb = new StringBuilder("SELECT * FROM vertex WHERE src=?");
     for (int i = 0; i < walkState.size(); i++) sb.append(" AND service NOT LIKE ?");
     PreparedStatement ps = null;

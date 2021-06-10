@@ -2,15 +2,14 @@ package com.jonathan.sgrouter.routing.models;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 import lombok.Data;
 
 @Data
 public class RouteState implements Comparable<RouteState> {
   String src, prevService;
   double time;
-  Set<String> traversedNodes;
-  Set<String> walked;
+  HashSet<String> traversedNodes;
+  HashSet<String> walked;
   ArrayList<SubRoute> path;
 
   // Used for initialisation of src
