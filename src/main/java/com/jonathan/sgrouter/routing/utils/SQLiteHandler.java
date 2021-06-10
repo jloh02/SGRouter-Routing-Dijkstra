@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,8 +24,8 @@ public class SQLiteHandler {
     }
   }
 
-  public List<Node> getNodes() {
-    List<Node> op = new ArrayList<>();
+  public ArrayList<Node> getNodes() {
+    ArrayList<Node> op = new ArrayList<>();
     Statement s = null;
     ResultSet res = null;
     try {
@@ -47,8 +46,9 @@ public class SQLiteHandler {
     return op;
   }
 
-  private List<Vertex> getVerticesAbstract(PreparedStatement ps, ResultSet res) throws Exception {
-    List<Vertex> op = new ArrayList<>();
+  private ArrayList<Vertex> getVerticesAbstract(PreparedStatement ps, ResultSet res)
+      throws Exception {
+    ArrayList<Vertex> op = new ArrayList<>();
     res = ps.executeQuery();
     while (res.next())
       op.add(
@@ -60,7 +60,7 @@ public class SQLiteHandler {
     return op;
   }
 
-  public List<Vertex> getVertices(String src, String prevService) {
+  public ArrayList<Vertex> getVertices(String src, String prevService) {
     StringBuilder sb = new StringBuilder("SELECT * FROM vertex WHERE src=? AND service<>?");
     if (Utils.isBusService(prevService)) sb.append(" AND service NOT LIKE ?");
     PreparedStatement ps = null;
@@ -81,7 +81,7 @@ public class SQLiteHandler {
     return new ArrayList<>();
   }
 
-  public List<Vertex> getVertices(String src, Set<String> walkState) {
+  public ArrayList<Vertex> getVertices(String src, Set<String> walkState) {
     StringBuilder sb = new StringBuilder("SELECT * FROM vertex WHERE src=?");
     for (int i = 0; i < walkState.size(); i++) sb.append(" AND service NOT LIKE ?");
     PreparedStatement ps = null;

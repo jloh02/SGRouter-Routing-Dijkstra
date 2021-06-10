@@ -6,7 +6,7 @@ import com.jonathan.sgrouter.routing.models.RouteState;
 import com.jonathan.sgrouter.routing.models.Vertex;
 import com.jonathan.sgrouter.routing.models.VisitedState;
 import java.util.HashMap;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.PriorityQueue;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +17,9 @@ public class Pathfinder implements Runnable {
 
   String src, des;
   double firstWalk, lastWalk;
-  List<Node> nodes;
+  ArrayList<Node> nodes;
 
-  public Pathfinder(List<Node> nodes, String src, String des, double firstWalk, double lastWalk) {
+  public Pathfinder(ArrayList<Node> nodes, String src, String des, double firstWalk, double lastWalk) {
     this.src = src;
     this.des = des;
     this.firstWalk = firstWalk;
@@ -60,7 +60,7 @@ public class Pathfinder implements Runnable {
         continue;
       }
 
-      List<Vertex> adjList;
+      ArrayList<Vertex> adjList;
       adjList =
           curr.getPrevService().contains("Walk")
               ? PathfinderExecutor.sqh.getVertices(curr.getSrc(), curr.getWalked())
