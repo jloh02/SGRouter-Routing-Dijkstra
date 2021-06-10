@@ -5,17 +5,15 @@ import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.jonathan.sgrouter.routing.RoutingApplication;
-
-import lombok.extern.slf4j.Slf4j;
-
 import java.nio.file.Paths;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CloudStorageHandler {
-  final static String dbPath =
+  static final String dbPath =
       RoutingApplication.config.isAppengineDeployment() ? "/tmp/graph.db" : "graph.db";
-  final static String bucketName = "sg-router.appspot.com";
-  final static String objectName = "graph.db";
+  static final String bucketName = "sg-router.appspot.com";
+  static final String objectName = "graph.db";
 
   public static void downloadDB() {
     Storage store = StorageOptions.getDefaultInstance().getService();
