@@ -23,6 +23,9 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.GeodeticCalculator;
 import org.opengis.referencing.FactoryException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class PathfinderExecutor {
 	final public static int kShortest = 3;
 	public static Map<String, List<SubRoute>> dp;
@@ -32,15 +35,18 @@ public class PathfinderExecutor {
 	public static volatile boolean threadInterrupt;
 
 	public static String route(double startLat, double startLon, double endLat, double endLon) {
-		threadInterrupt=false;
+		threadInterrupt = false;
 
 		sqh = new SQLiteHandler();
-		if(RoutingApplication.config.isAppengineDeployment())CloudStorageHandler.downloadDB();
+		if (RoutingApplication.config.isAppengineDeployment())
+			CloudStorageHandler.downloadDB();
 
 		routes = new RouteList(kShortest);
 		dp = new HashMap<>();
 
 		double walkSpeed = DatastoreHandler.getWalkSpeed();
+		if (walkSpeed < 0)
+			return "";
 
 		List<Node> nodes = sqh.getNodes();
 		NodeDistList starts = new NodeDistList(5), ends = new NodeDistList(5);
@@ -59,7 +65,7 @@ public class PathfinderExecutor {
 				ends.add(new NodeDist(n.getSrcKey(), desGC.getOrthodromicDistance()));
 			}
 		} catch (FactoryException e) {
-			System.err.println(e);
+			log.error(e.getMessage());
 		}
 
 		//? Debugging Test Set
@@ -68,33 +74,35 @@ public class PathfinderExecutor {
 		// ends = new NodeDistList(1);
 		// ends.add(new NodeDist("19089", 300));
 
-		System.out.println(starts);
-		System.out.println(ends);
+		log.debug("Start Nodes: {}", starts.toString());
+		log.debug("End Nodes: {}", ends.toString());
 
 		ExecutorService executor = Executors.newFixedThreadPool(2);
-		for (NodeDist s : starts)
-			for (NodeDist e : ends)
+		for (NodeDist s : starts) {
+			for (NodeDist e : ends) {
 				executor.execute(new Thread(new Pathfinder(nodes, s.getSrc(), e.getSrc(),
 						s.getDist() * 0.001 / walkSpeed, e.getDist() * 0.001 / walkSpeed)));
+			}
+		}
 
 		//Wait for all threads to finish execution or 30s timeout
 		executor.shutdown();
 		synchronized (executor) {
 			try {
 				if (!executor.awaitTermination(10000, TimeUnit.MILLISECONDS))
-					System.err.println("TIMED OUT");
+					log.debug("Routing timed out");
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
-		threadInterrupt=true;
+		threadInterrupt = true;
 		executor.shutdownNow();
 
-		System.out.println(routes.size());
-		System.out.println(routes);
-		
+		log.debug("Number of routes found: {}", routes.size());
+		log.debug("Routes:\n{}", routes.toString());
+
 		sqh.close();
 
-		return "";
+		return ""; //TODO return string form of route
 	}
 }

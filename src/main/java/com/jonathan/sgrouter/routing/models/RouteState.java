@@ -21,8 +21,8 @@ public class RouteState implements Comparable<RouteState> {
 		this.prevService = prevService;
 		this.time = time;
 		this.walked = new HashSet<>();
-		this.path=new ArrayList<>();
-		this.traversedNodes=new HashSet<>();
+		this.path = new ArrayList<>();
+		this.traversedNodes = new HashSet<>();
 	}
 
 	//Used for appending to pq
@@ -31,13 +31,14 @@ public class RouteState implements Comparable<RouteState> {
 		this.prevService = prevService;
 		this.time = old.getTime();
 		this.walked = new HashSet<>(old.getWalked());
-		this.path=new ArrayList<>(old.getPath());
+		this.path = new ArrayList<>(old.getPath());
 		this.traversedNodes = new HashSet<>(old.getTraversedNodes());
 
 		this.time += vtxTime;
 		this.path.add(new SubRoute(vtxTime, prevService, src));
 		this.traversedNodes.add(src);
-		if(this.prevService.contains("Walk")) this.walked.add(prevService);
+		if (this.prevService.contains("Walk"))
+			this.walked.add(prevService);
 	}
 
 	@Override

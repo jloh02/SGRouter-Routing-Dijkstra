@@ -12,6 +12,9 @@ import com.jonathan.sgrouter.routing.models.RouteState;
 import com.jonathan.sgrouter.routing.models.Vertex;
 import com.jonathan.sgrouter.routing.models.VisitedState;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class Pathfinder implements Runnable {
 	Map<String, VisitedState> vis = new HashMap<>();
 
@@ -38,12 +41,13 @@ public class Pathfinder implements Runnable {
 		pq.add(new RouteState(this.src, "Walk", this.firstWalk));
 		while (!pq.isEmpty() && routesFound < PathfinderExecutor.kShortest) {
 
-			if(PathfinderExecutor.threadInterrupt) return; //Kill switch
+			if (PathfinderExecutor.threadInterrupt)
+				return; //Kill switch
 
 			RouteState curr = pq.poll();
 
-			//System.out.println(curr.getPath());
-			//System.out.println(curr.getWalked());
+			// log.trace(curr.getPath().toString());
+			// log.trace(curr.getWalked().toString());
 
 			if (visited(curr.getSrc(), curr.getPrevService()))
 				continue;
@@ -64,16 +68,15 @@ public class Pathfinder implements Runnable {
 			}
 
 			List<Vertex> adjList;
-			//synchronized (PathfinderExecutor.sqh) {
-				adjList = curr.getPrevService().contains("Walk")
-						? PathfinderExecutor.sqh.getVertices(curr.getSrc(), curr.getWalked())
-						: PathfinderExecutor.sqh.getVertices(curr.getSrc(), curr.getPrevService());
-			//}
+			adjList = curr.getPrevService().contains("Walk")
+					? PathfinderExecutor.sqh.getVertices(curr.getSrc(), curr.getWalked())
+					: PathfinderExecutor.sqh.getVertices(curr.getSrc(), curr.getPrevService());
 
 			if (!curr.getPrevService().contains("Walk"))
 				curr.resetWalk();
 			for (Vertex v : adjList) {
-				if(PathfinderExecutor.threadInterrupt) return; //Kill switch
+				if (PathfinderExecutor.threadInterrupt)
+					return; //Kill switch
 
 				if (PathfinderExecutor.routes.size() >= PathfinderExecutor.kShortest && v.getTime()
 						+ curr.getTime() > PathfinderExecutor.routes.get(PathfinderExecutor.kShortest - 1).getTime())
@@ -82,22 +85,11 @@ public class Pathfinder implements Runnable {
 					pq.add(new RouteState(curr, v.getDes(), v.getService(), v.getTime()));
 			}
 		}
-		// System.out.println(pq.isEmpty());
-		// System.out.println(PathfinderExecutor.kShortest);
-		// System.out.println(routesFound);
-		System.out.println("Done");
+		log.debug("Thread [{}] completed", Thread.currentThread().getName());
 	}
 
 	boolean visited(String src, String prevService) {
-		//try {
-			return (vis.get(src).getNodes().size() + vis.get(src).getWalks() >= PathfinderExecutor.kShortest)
-					|| (!prevService.contains("Walk") && vis.get(src).getNodes().contains(prevService));
-		/*} catch (NullPointerException e) {
-			System.out.println("ERROR");
-			System.out.println(vis.get(src));
-			System.out.println(PathfinderExecutor.kShortest);
-
-		}
-		return true;*/
+		return (vis.get(src).getNodes().size() + vis.get(src).getWalks() >= PathfinderExecutor.kShortest)
+				|| (!prevService.contains("Walk") && vis.get(src).getNodes().contains(prevService));
 	}
 }

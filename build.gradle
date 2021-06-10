@@ -17,10 +17,6 @@ repositories {
 	mavenCentral()
 }
 
-configurations.all {
-	exclude module: 'spring-boot-starter-logging'
-}
-
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -37,8 +33,6 @@ dependencies {
 	implementation platform('com.google.cloud:libraries-bom:20.5.0')
 	compile 'com.google.cloud:google-cloud-datastore'
 	compile 'com.google.cloud:google-cloud-storage'
-
-	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
 }
 
 test {

@@ -9,31 +9,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.io.File;
-import java.io.IOException;
 
-import com.jonathan.sgrouter.routing.RoutingApplication;
 import com.jonathan.sgrouter.routing.models.Node;
 import com.jonathan.sgrouter.routing.models.Vertex;
 
-//TODO proper interrupt
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SQLiteHandler {
 	Connection conn;
 
 	public SQLiteHandler() {
 		try {
-			// final String filename = RoutingApplication.config.isAppengineDeployment() ? "/tmp/graph.db" : "graph.db";
-			// File oldDbFile = new File(filename);
-			// if (oldDbFile.exists() && !oldDbFile.delete())
-			// 	throw new IOException("Unable to delete graph.db");
-
 			this.conn = DataSource.getConnection();
 		} catch (SQLException e) {
-			System.err.println(e);
-		} /*catch (IOException e) {
-			System.err.println(e);
-			//System.exit(1);
-			}*/
+			log.error(e.getMessage());
+		}
 	}
 
 	public List<Node> getNodes() {
@@ -47,7 +38,7 @@ public class SQLiteHandler {
 				op.add(new Node(res.getString("src"), res.getString("name"), res.getDouble("lat"),
 						res.getDouble("lon")));
 		} catch (Exception e) {
-			System.err.println(e.getMessage());
+			log.error(e.getMessage());
 		} finally {
 			cancelTransactions(s, res);
 		}
