@@ -46,7 +46,7 @@ public class Pathfinder implements Runnable {
 
       if (visited(curr.getSrc(), curr.getPrevService())) continue;
       if (curr.getPrevService().contains("Walk")) vis.get(curr.getSrc()).incrementWalk();
-      else vis.get(curr.getSrc()).getNodes().add(curr.getPrevService());
+      else vis.get(curr.getSrc()).getServices().add(curr.getPrevService());
 
       if (curr.getSrc().equals(this.des)) {
         Route r = new Route(curr.getTime(), curr.getPath(), nodeNames, this.lastWalk);
@@ -81,8 +81,8 @@ public class Pathfinder implements Runnable {
   }
 
   boolean visited(String src, String prevService) {
-    return (vis.get(src).getNodes().size() + vis.get(src).getWalks()
+    return (vis.get(src).getServices().size() + vis.get(src).getWalks()
             >= PathfinderExecutor.kShortest)
-        || (!prevService.contains("Walk") && vis.get(src).getNodes().contains(prevService));
+        || (!prevService.contains("Walk") && vis.get(src).getServices().contains(prevService));
   }
 }

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class VisitedState {
-  HashSet<String> nodes = new HashSet<>();
+  HashSet<String> services = new HashSet<>();
   int walks = 0;
 
   public void incrementWalk() {
