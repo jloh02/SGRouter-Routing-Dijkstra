@@ -1,5 +1,7 @@
 package com.jonathan.sgrouter.routing.controllers;
 
+import com.google.gson.Gson;
+import com.jonathan.sgrouter.routing.models.RouteList;
 import com.jonathan.sgrouter.routing.pathfinder.PathfinderExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +21,7 @@ public class RoutingController {
       @RequestParam("startLon") double startLon,
       @RequestParam("endLat") double endLat,
       @RequestParam("endLon") double endLon) {
-    return PathfinderExecutor.route(startLat, startLon, endLat, endLon);
+    RouteList routes = PathfinderExecutor.route(startLat, startLon, endLat, endLon);
+    return new Gson().toJson(routes);
   }
 }

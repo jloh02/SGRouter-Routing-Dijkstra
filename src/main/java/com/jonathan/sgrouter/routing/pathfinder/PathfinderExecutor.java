@@ -29,7 +29,7 @@ public class PathfinderExecutor {
 
   public static volatile boolean threadInterrupt;
 
-  public static String route(double startLat, double startLon, double endLat, double endLon) {
+  public static RouteList route(double startLat, double startLon, double endLat, double endLon) {
     threadInterrupt = false;
 
     sqh = new SQLiteHandler();
@@ -39,7 +39,7 @@ public class PathfinderExecutor {
     dp = new HashMap<>();
 
     double walkSpeed = DatastoreHandler.getWalkSpeed();
-    if (walkSpeed < 0) return "";
+    if (walkSpeed < 0) return routes;
 
     ArrayList<Node> nodes = sqh.getNodes();
     NodeDistList starts = new NodeDistList(5), ends = new NodeDistList(5);
@@ -101,6 +101,6 @@ public class PathfinderExecutor {
 
     sqh.close();
 
-    return ""; // TODO return string form of route
+    return routes;
   }
 }

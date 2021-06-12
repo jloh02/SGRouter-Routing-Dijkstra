@@ -13,4 +13,4 @@ logging:
     com.zaxxer.hikari: WARN
     com.google.cloud: WARN
 
-appengine-deployment: false
+appengine-deployment: true
