@@ -34,7 +34,7 @@ public class PathfinderExecutor {
 
     sqh = new SQLiteHandler();
     if (RoutingApplication.config.isAppengineDeployment()) CloudStorageHandler.downloadDB();
-
+    
     routes = new RouteList(kShortest);
     dp = new HashMap<>();
 
