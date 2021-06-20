@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CloudStorageHandler {
   static final String dbPath =
-      RoutingApplication.config.isAppengineDeployment() ? "/tmp/graph.db" : "graph.db";
+      RoutingApplication.appengineDeployment ? "/tmp/graph.db" : "graph.db";
   static final String bucketName = "sg-router.appspot.com";
   static final String objectName = "graph.db";
 

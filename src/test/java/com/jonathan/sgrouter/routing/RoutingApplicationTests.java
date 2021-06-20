@@ -23,4 +23,9 @@ class RoutingApplicationTests {
   double randLon() {
     return 103.750295 + (103.897093 - 103.750295) * r.nextDouble();
   }
+
+  @Test
+  void sampleTest() {
+    PathfinderExecutor.route(1.351753, 103.862681, 1.303445, 103.781877);
+  }
 }

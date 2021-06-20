@@ -13,7 +13,7 @@ public class DataSource {
   public static Connection getConnection() throws SQLException {
     config = new HikariConfig();
     final String filename =
-        RoutingApplication.config.isAppengineDeployment() ? "/tmp/graph.db" : "graph.db";
+        RoutingApplication.appengineDeployment ? "/tmp/graph.db" : "graph.db";
     config.setJdbcUrl("jdbc:sqlite:" + filename);
     config.setMaximumPoolSize(10);
     config.setMinimumIdle(5);

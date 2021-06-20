@@ -10,8 +10,13 @@ import com.jonathan.sgrouter.routing.utils.CloudStorageHandler;
 import com.jonathan.sgrouter.routing.utils.DatastoreHandler;
 import com.jonathan.sgrouter.routing.utils.SQLiteHandler;
 import com.jonathan.sgrouter.routing.utils.Utils;
-import java.util.HashMap;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -33,8 +38,18 @@ public class PathfinderExecutor {
     threadInterrupt = false;
 
     sqh = new SQLiteHandler();
-    if (RoutingApplication.config.isAppengineDeployment()) CloudStorageHandler.downloadDB();
-    
+    if (RoutingApplication.appengineDeployment) CloudStorageHandler.downloadDB();
+    else {
+      try (InputStream is = new FileInputStream("archive/12_sun_graph.db");OutputStream os = new FileOutputStream("graph.db")){
+        byte[] buffer = new byte[64000000];
+        int length;
+        while ((length = is.read(buffer)) > 0) 
+          os.write(buffer, 0, length);
+      } catch(Exception e){
+        System.exit(1);
+      }
+    }
+
     routes = new RouteList(kShortest);
     dp = new HashMap<>();
 
@@ -59,12 +74,6 @@ public class PathfinderExecutor {
     } catch (FactoryException e) {
       log.error(e.getMessage());
     }
-
-    // ? Debugging Test Set
-    // starts = new NodeDistList(1);
-    // starts.add(new NodeDist("CC14", 300));
-    // ends = new NodeDistList(1);
-    // ends.add(new NodeDist("19089", 300));
 
     log.debug("Start Nodes: {}", starts.toString());
     log.debug("End Nodes: {}", ends.toString());
