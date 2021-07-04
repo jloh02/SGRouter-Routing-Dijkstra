@@ -116,9 +116,5 @@ public class SQLiteHandler {
       conn.close();
     } catch (Exception e) {
     }
-    try {
-      DataSource.close();
-    } catch (Exception e) {
-    }
   }
 }
