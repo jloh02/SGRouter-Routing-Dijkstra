@@ -3,14 +3,11 @@ package com.jonathan.sgrouter.routing.utils;
 import com.jonathan.sgrouter.routing.models.Node;
 import com.jonathan.sgrouter.routing.models.Vertex;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -48,38 +45,18 @@ public class SQLiteHandler {
     return op;
   }
 
-  private ArrayList<Vertex> getVerticesAbstract(PreparedStatement ps, ResultSet res)
-      throws Exception {
-    ArrayList<Vertex> op = new ArrayList<>();
-    res = ps.executeQuery();
-    while (res.next())
-      op.add(new Vertex(res.getString(1), res.getString(2), res.getString(3), res.getDouble(4)));
+  public HashMap<String, ArrayList<Vertex>> getVertices() {
+    HashMap<String, ArrayList<Vertex>> op = new HashMap<>();
+    try (Statement s = conn.createStatement();
+        ResultSet res = s.executeQuery("SELECT * FROM vertex")) {
+      while (res.next()) {
+        String src = res.getString(1);
+        if (!op.containsKey(src)) op.put(src, new ArrayList<>());
+        op.get(src).add(new Vertex(src, res.getString(2), res.getString(3), res.getDouble(4)));
+      }
+    } catch (Exception e) {
+    }
     return op;
-  }
-
-  public ArrayList<Vertex> getVertices(String src) {
-    try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM vertex WHERE src=?");
-        ResultSet res = null) {
-      ps.setString(1, src);
-
-      return getVerticesAbstract(ps, res);
-    } catch (Exception e) {
-    }
-    return new ArrayList<>();
-  }
-
-  public ArrayList<Vertex> getVertices(String src, HashSet<String> walkState) {
-    StringBuilder sb = new StringBuilder("SELECT * FROM vertex WHERE src=?");
-    for (int i = 0; i < walkState.size(); i++) sb.append(" AND service <> ?");
-    try (PreparedStatement ps = conn.prepareStatement(sb.toString());
-        ResultSet res = null) {
-      ps.setString(1, src);
-      Iterator<String> walks = walkState.iterator();
-      for (int i = 2; i < walkState.size() + 2; i++) ps.setString(i, walks.next());
-      return getVerticesAbstract(ps, res);
-    } catch (Exception e) {
-    }
-    return new ArrayList<>();
   }
 
   public void close() {

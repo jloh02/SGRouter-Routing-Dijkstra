@@ -9,7 +9,9 @@ public class Route implements Comparable<Route> {
   double time;
   ArrayList<SubRoute> route;
 
-  public Route(double time, ArrayList<SubRoute> path, HashMap<String, String> names, double lastWalk) {
+  // TODO truncate path
+  public Route(
+      double time, ArrayList<SubRoute> path, HashMap<String, String> names, double lastWalk) {
     this.time = time + lastWalk;
     this.route = new ArrayList<>(path);
     for (SubRoute sr : this.route) sr.setName(names.get(sr.getDes()));

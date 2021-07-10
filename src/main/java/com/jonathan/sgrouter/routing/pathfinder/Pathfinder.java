@@ -62,15 +62,15 @@ public class Pathfinder implements Runnable {
         continue;
       }
 
-      ArrayList<Vertex> adjList;
-      adjList =
-          curr.getPrevService().contains("Walk")
-              ? PathfinderExecutor.sqh.getVertices(curr.getSrc(), curr.getWalked())
-              : PathfinderExecutor.sqh.getVertices(curr.getSrc());
+      ArrayList<Vertex> adjList =
+          PathfinderExecutor.adjList.getOrDefault(curr.getSrc(), new ArrayList<>());
 
       if (!curr.getPrevService().contains("Walk")) curr.resetWalk();
       for (Vertex v : adjList) {
         if (PathfinderExecutor.threadInterrupt) return; // Kill switch
+
+        if (curr.getPrevService().contains("Walk") && curr.getWalked().contains(v.getService()))
+          continue;
 
         if (PathfinderExecutor.routes.size() >= PathfinderExecutor.kShortest
             && v.getTime() + curr.getTime()
