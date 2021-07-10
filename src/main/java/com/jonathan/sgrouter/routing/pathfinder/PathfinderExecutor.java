@@ -6,6 +6,7 @@ import com.jonathan.sgrouter.routing.models.NodeDist;
 import com.jonathan.sgrouter.routing.models.NodeDistList;
 import com.jonathan.sgrouter.routing.models.RouteList;
 import com.jonathan.sgrouter.routing.models.SubRoute;
+import com.jonathan.sgrouter.routing.models.Vertex;
 import com.jonathan.sgrouter.routing.utils.CloudStorageHandler;
 import com.jonathan.sgrouter.routing.utils.DatastoreHandler;
 import com.jonathan.sgrouter.routing.utils.SQLiteHandler;
@@ -31,6 +32,7 @@ public class PathfinderExecutor {
   public static SQLiteHandler sqh;
   public static RouteList routes;
   public static HashMap<String, Double> freq;
+  public static HashMap<String, ArrayList<Vertex>> adjList;
 
   public static volatile boolean threadInterrupt;
 
@@ -57,6 +59,7 @@ public class PathfinderExecutor {
     if (walkSpeed < 0) return routes;
 
     freq = sqh.getFreqs();
+    adjList = sqh.getVertices();
 
     ArrayList<Node> nodes = sqh.getNodes();
     NodeDistList starts = new NodeDistList(5), ends = new NodeDistList(5);
