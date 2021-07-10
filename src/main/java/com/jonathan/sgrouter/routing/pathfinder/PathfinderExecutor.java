@@ -10,7 +10,6 @@ import com.jonathan.sgrouter.routing.utils.CloudStorageHandler;
 import com.jonathan.sgrouter.routing.utils.DatastoreHandler;
 import com.jonathan.sgrouter.routing.utils.SQLiteHandler;
 import com.jonathan.sgrouter.routing.utils.Utils;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -31,6 +30,7 @@ public class PathfinderExecutor {
   public static HashMap<String, ArrayList<SubRoute>> dp;
   public static SQLiteHandler sqh;
   public static RouteList routes;
+  public static HashMap<String, Double> freq;
 
   public static volatile boolean threadInterrupt;
 
@@ -40,12 +40,12 @@ public class PathfinderExecutor {
     sqh = new SQLiteHandler();
     if (RoutingApplication.appengineDeployment) CloudStorageHandler.downloadDB();
     else {
-      try (InputStream is = new FileInputStream("archive/12_sun_graph.db");OutputStream os = new FileOutputStream("graph.db")){
+      try (InputStream is = new FileInputStream("archive/12_sun_graph_short.db");
+          OutputStream os = new FileOutputStream("graph.db")) {
         byte[] buffer = new byte[64000000];
         int length;
-        while ((length = is.read(buffer)) > 0) 
-          os.write(buffer, 0, length);
-      } catch(Exception e){
+        while ((length = is.read(buffer)) > 0) os.write(buffer, 0, length);
+      } catch (Exception e) {
         System.exit(1);
       }
     }
@@ -55,6 +55,8 @@ public class PathfinderExecutor {
 
     double walkSpeed = DatastoreHandler.getWalkSpeed();
     if (walkSpeed < 0) return routes;
+
+    freq = sqh.getFreqs();
 
     ArrayList<Node> nodes = sqh.getNodes();
     NodeDistList starts = new NodeDistList(5), ends = new NodeDistList(5);
@@ -78,7 +80,7 @@ public class PathfinderExecutor {
     log.debug("Start Nodes: {}", starts.toString());
     log.debug("End Nodes: {}", ends.toString());
 
-    ExecutorService executor = Executors.newFixedThreadPool(2);
+    ExecutorService executor = Executors.newCachedThreadPool(); // Executors.newFixedThreadPool(2);
     for (NodeDist s : starts) {
       for (NodeDist e : ends) {
         executor.execute(
@@ -96,7 +98,7 @@ public class PathfinderExecutor {
     executor.shutdown();
     synchronized (executor) {
       try {
-        if (!executor.awaitTermination(10000, TimeUnit.MILLISECONDS))
+        if (!executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS))
           log.debug("Routing timed out");
       } catch (InterruptedException e) {
         log.error(e.getMessage());

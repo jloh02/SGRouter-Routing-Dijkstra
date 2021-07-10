@@ -15,4 +15,8 @@ public class Vertex {
     this.service = service;
     this.time = time;
   }
+
+  public void addFreq(double f){
+    this.time += f;
+  }
 }

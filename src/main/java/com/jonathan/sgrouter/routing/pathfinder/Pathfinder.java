@@ -5,8 +5,8 @@ import com.jonathan.sgrouter.routing.models.Route;
 import com.jonathan.sgrouter.routing.models.RouteState;
 import com.jonathan.sgrouter.routing.models.Vertex;
 import com.jonathan.sgrouter.routing.models.VisitedState;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.PriorityQueue;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +18,8 @@ public class Pathfinder implements Runnable {
   double firstWalk, lastWalk;
   ArrayList<Node> nodes;
 
-  public Pathfinder(ArrayList<Node> nodes, String src, String des, double firstWalk, double lastWalk) {
+  public Pathfinder(
+      ArrayList<Node> nodes, String src, String des, double firstWalk, double lastWalk) {
     this.src = src;
     this.des = des;
     this.firstWalk = firstWalk;
@@ -41,10 +42,12 @@ public class Pathfinder implements Runnable {
 
       RouteState curr = pq.poll();
 
-      // log.trace(curr.getPath().toString());
-      // log.trace(curr.getWalked().toString());
+      if (PathfinderExecutor.routes.size() >= PathfinderExecutor.kShortest
+          && curr.getTime()
+              > PathfinderExecutor.routes.get(PathfinderExecutor.kShortest - 1).getTime()) return;
 
       if (visited(curr.getSrc(), curr.getPrevService())) continue;
+
       if (curr.getPrevService().contains("Walk")) vis.get(curr.getSrc()).incrementWalk();
       else vis.get(curr.getSrc()).getServices().add(curr.getPrevService());
 
@@ -63,7 +66,7 @@ public class Pathfinder implements Runnable {
       adjList =
           curr.getPrevService().contains("Walk")
               ? PathfinderExecutor.sqh.getVertices(curr.getSrc(), curr.getWalked())
-              : PathfinderExecutor.sqh.getVertices(curr.getSrc(), curr.getPrevService());
+              : PathfinderExecutor.sqh.getVertices(curr.getSrc());
 
       if (!curr.getPrevService().contains("Walk")) curr.resetWalk();
       for (Vertex v : adjList) {

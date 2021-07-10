@@ -1,12 +1,13 @@
 package com.jonathan.sgrouter.routing.models;
 
+import com.jonathan.sgrouter.routing.pathfinder.PathfinderExecutor;
 import java.util.ArrayList;
 import java.util.HashSet;
 import lombok.Data;
 
 @Data
 public class RouteState implements Comparable<RouteState> {
-  String src, prevService;
+  String src, prevSrc, prevService;
   double time;
   HashSet<String> traversedNodes;
   HashSet<String> walked;
@@ -15,6 +16,7 @@ public class RouteState implements Comparable<RouteState> {
   // Used for initialisation of src
   public RouteState(String src, String prevService, double time) {
     this.src = src;
+    this.prevSrc = src;
     this.prevService = prevService;
     this.time = time;
     this.walked = new HashSet<>();
@@ -23,15 +25,22 @@ public class RouteState implements Comparable<RouteState> {
   }
 
   // Used for appending to pq
-  public RouteState(RouteState old, String src, String prevService, double vtxTime) {
+  public RouteState(RouteState old, String src, String service, double vtxTime) {
     this.src = src;
-    this.prevService = prevService;
+    this.prevSrc = old.src;
+    this.prevService = service;
     this.time = old.getTime();
     this.walked = new HashSet<>(old.getWalked());
     this.path = new ArrayList<>(old.getPath());
     this.traversedNodes = new HashSet<>(old.getTraversedNodes());
 
     this.time += vtxTime;
+    if (!old.getPrevService().equals(prevService)) {
+      this.time +=
+          service.contains("Walk")
+              ? 0
+              : PathfinderExecutor.freq.getOrDefault(service, PathfinderExecutor.freq.get("train"));
+    }
     this.path.add(new SubRoute(vtxTime, prevService, src));
     this.traversedNodes.add(src);
     if (this.prevService.contains("Walk")) this.walked.add(prevService);
