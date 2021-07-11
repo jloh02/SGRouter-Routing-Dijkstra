@@ -16,7 +16,7 @@ public class Vertex {
     this.time = time;
   }
 
-  public void addFreq(double f){
+  public void addFreq(double f) {
     this.time += f;
   }
 }
