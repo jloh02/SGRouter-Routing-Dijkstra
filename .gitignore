@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+archive/
+graph.db
+graph.sqlite
