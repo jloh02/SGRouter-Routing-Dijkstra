@@ -13,4 +13,4 @@ pluginManagement {
   }
 }
 
-rootProject.name = 'routing_service'
+rootProject.name = 'dijkstra_routing'
