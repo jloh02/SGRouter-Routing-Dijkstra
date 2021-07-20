@@ -92,9 +92,7 @@ public class PathfinderExecutor {
     log.debug("Start Nodes: {}", starts.toString());
     log.debug("End Nodes: {}", ends.toString());
 
-    int cores = Runtime.getRuntime().availableProcessors();
-    log.debug("Running on {} cores", cores);
-    ExecutorService executor = Executors.newFixedThreadPool(cores);
+    ExecutorService executor = Executors.newFixedThreadPool(8);
     for (NodeDist s : starts) {
       for (NodeDist e : ends) {
         executor.execute(
