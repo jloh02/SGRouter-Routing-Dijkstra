@@ -47,7 +47,6 @@ public class PathfinderExecutor {
     String dbName =
         String.format("graph_%d_%d.db", dt.getHour(), 5 * (int) (Math.floor(dt.getMinute() / 5.)));
     if (RoutingApplication.appengineDeployment) {
-      dbName = "/tmp/" + dbName;
       CloudStorageHandler.downloadDB(dbName);
     } else {
       dbName = "archive/sun_dbs/" + dbName;
@@ -93,7 +92,9 @@ public class PathfinderExecutor {
     log.debug("Start Nodes: {}", starts.toString());
     log.debug("End Nodes: {}", ends.toString());
 
-    ExecutorService executor = Executors.newCachedThreadPool(); // Executors.newFixedThreadPool(2);
+    int cores = Runtime.getRuntime().availableProcessors();
+    log.debug("Running on {} cores", cores);
+    ExecutorService executor = Executors.newFixedThreadPool(cores);
     for (NodeDist s : starts) {
       for (NodeDist e : ends) {
         executor.execute(
