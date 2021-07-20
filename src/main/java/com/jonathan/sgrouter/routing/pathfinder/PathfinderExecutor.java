@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -36,18 +37,27 @@ public class PathfinderExecutor {
 
   public static volatile boolean threadInterrupt;
 
-  public static RouteList route(double startLat, double startLon, double endLat, double endLon) {
+  public static RouteList route(
+      double startLat, double startLon, double endLat, double endLon, ZonedDateTime dt) {
     threadInterrupt = false;
 
+    if (dt.getHour() >= 2 && dt.getHour() <= 4) return new RouteList(3);
+
     sqh = new SQLiteHandler();
-    if (RoutingApplication.appengineDeployment) CloudStorageHandler.downloadDB();
-    else {
-      try (InputStream is = new FileInputStream("archive/12_sun_graph_short.db");
+    String dbName =
+        String.format("graph_%d_%d.db", dt.getHour(), 5 * (int) (Math.floor(dt.getMinute() / 5.)));
+    if (RoutingApplication.appengineDeployment) {
+      dbName = "/tmp/" + dbName;
+      CloudStorageHandler.downloadDB(dbName);
+    } else {
+      dbName = "archive/sun_dbs/" + dbName;
+      try (InputStream is = new FileInputStream(dbName);
           OutputStream os = new FileOutputStream("graph.db")) {
-        byte[] buffer = new byte[64000000];
+        byte[] buffer = new byte[5000000];
         int length;
         while ((length = is.read(buffer)) > 0) os.write(buffer, 0, length);
       } catch (Exception e) {
+        log.error(e.getMessage());
         System.exit(1);
       }
     }

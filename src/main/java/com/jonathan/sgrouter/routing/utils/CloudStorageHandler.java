@@ -13,11 +13,10 @@ public class CloudStorageHandler {
   static final String dbPath =
       RoutingApplication.appengineDeployment ? "/tmp/graph.db" : "graph.db";
   static final String bucketName = "sg-router.appspot.com";
-  static final String objectName = "graph.db";
 
-  public static void downloadDB() {
+  public static void downloadDB(String dbName) {
     Storage store = StorageOptions.getDefaultInstance().getService();
-    Blob b = store.get(BlobId.of(bucketName, objectName));
+    Blob b = store.get(BlobId.of(bucketName, dbName));
     b.downloadTo(Paths.get(dbPath));
     log.debug("Downloaded graph.db");
   }
