@@ -62,6 +62,7 @@ public class SQLiteHandler {
   public void close() {
     try {
       conn.close();
+      DataSource.close();
     } catch (Exception e) {
     }
   }
