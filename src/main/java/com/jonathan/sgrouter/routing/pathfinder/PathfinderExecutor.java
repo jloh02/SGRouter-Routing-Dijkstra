@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,15 +38,14 @@ public class PathfinderExecutor {
 
   public static volatile boolean threadInterrupt;
 
-  public static RouteList route(
-      double startLat, double startLon, double endLat, double endLon, ZonedDateTime dt) {
+  public static RouteList route(double startLat, double startLon, double endLat, double endLon) {
     threadInterrupt = false;
 
+    ZonedDateTime dt = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Asia/Singapore"));
     if (dt.getHour() >= 2 && dt.getHour() <= 4) return new RouteList(3);
 
     sqh = new SQLiteHandler();
-    String dbName =
-        String.format("graph_%d_%d.db", dt.getHour(), 5 * (int) (Math.floor(dt.getMinute() / 5.)));
+    String dbName = "graph.db";
     if (RoutingApplication.appengineDeployment) {
       CloudStorageHandler.downloadDB(dbName);
     } else {
@@ -73,6 +73,7 @@ public class PathfinderExecutor {
     ArrayList<Node> nodes = sqh.getNodes();
     NodeDistList starts = new NodeDistList(5), ends = new NodeDistList(5);
     try {
+      // TODO use spatial index
       GeodeticCalculator srcGC = new GeodeticCalculator(CRS.parseWKT(Utils.getLatLonWKT()));
       srcGC.setStartingGeographicPoint(startLon, startLat);
       GeodeticCalculator desGC = new GeodeticCalculator(CRS.parseWKT(Utils.getLatLonWKT()));
