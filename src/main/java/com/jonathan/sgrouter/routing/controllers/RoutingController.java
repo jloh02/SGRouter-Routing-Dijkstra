@@ -20,8 +20,7 @@ public class RoutingController {
       @RequestParam double startLat,
       @RequestParam double startLon,
       @RequestParam double endLat,
-      @RequestParam double endLon,
-      @RequestParam(required = false) Long epochTime) { // epochTime in seconds
+      @RequestParam double endLon) {
     RouteList routes = PathfinderExecutor.route(startLat, startLon, endLat, endLon);
     return new Gson().toJson(routes);
   }
